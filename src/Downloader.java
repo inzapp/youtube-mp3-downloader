@@ -1,8 +1,6 @@
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -10,52 +8,77 @@ import java.nio.charset.StandardCharsets;
 public class Downloader {
 
     public static void main(String[] args) {
-        System.out.println("Start converting...");
-        String youtubeVideoUrl = "https://www.youtube.com/watch?v=97Onz7v-vXY";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader("youtube-urls.txt"));
+            while (true) {
+                String youtubeVideoUrl = br.readLine();
+                if (youtubeVideoUrl == null) {
+                    break;
+                }
+
+                int res;
+                do {
+                    res = youtubeToMp3Download(youtubeVideoUrl);
+                } while (res == 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int youtubeToMp3Download(String youtubeVideoUrl) {
+        System.out.println("Start api requesting : " + youtubeVideoUrl);
         String uuid = getUuid(youtubeVideoUrl);
         if (uuid == null) {
             System.out.println("ERROR while converting youtube video : invalid youtube video url");
-            return;
+            return -1;
         }
 
         boolean bGetTitle = false;
         boolean bGetDuration = false;
         boolean bGetThumbnail = false;
         String fileUrl;
+        String fileName = null;
         while (true) {
             JSONObject json = getConvertingStatus(uuid);
 
             String title = getJsonValue(json, "title");
-            if(title != null && !bGetTitle) {
+            if (title != null && !bGetTitle) {
                 System.out.println("title : " + title);
+                fileName = title;
                 bGetTitle = true;
             }
 
             String duration = getJsonValue(json, "duration");
-            if(duration != null && !bGetDuration) {
+            if (duration != null && !bGetDuration) {
                 System.out.println("duration : " + duration);
                 bGetDuration = true;
             }
 
             String thumbnailUrl = getJsonValue(json, "thumbnail");
-            if(thumbnailUrl != null && !bGetThumbnail) {
+            if (thumbnailUrl != null && !bGetThumbnail) {
                 System.out.println("thumbnail url : " + thumbnailUrl);
                 bGetThumbnail = true;
             }
 
             String percentage = getJsonValue(json, "percent");
-            if(percentage != null) {
+            if (percentage != null) {
                 System.out.println("percentage : " + percentage);
             }
 
             fileUrl = getJsonValue(json, "fileUrl");
-            if(getJsonValue(json, "fileUrl") != null) {
+            if (getJsonValue(json, "fileUrl") != null) {
                 break;
             }
 
             String newUuid = getJsonValue(json, "uuid");
-            if(!uuid.equals(newUuid)) {
-                System.out.println("UUID DIFFER !!!!!");
+            try {
+                if (!uuid.equals(newUuid)) {
+                    System.out.println("UUID DIFFER !!!!!");
+                    uuid = newUuid;
+                }
+            } catch (Exception e) {
+                return 1;
             }
 
             try {
@@ -64,7 +87,8 @@ public class Downloader {
             }
         }
 
-        System.out.println(fileUrl);
+        downloadMp3ViaFileUrl(fileUrl, fileName);
+        return 0;
     }
 
     private static String getUuid(String youtubeVideoUrl) {
@@ -128,12 +152,33 @@ public class Downloader {
 
     private static String getJsonValue(JSONObject json, String key) {
         try {
-            if(key.equals("percent"))
+            if (key.equals("percent"))
                 return String.valueOf(json.getJSONObject("data").getInt(key));
             else
                 return json.getJSONObject("data").getString(key);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private static void downloadMp3ViaFileUrl(String fileUrl, String fileName) {
+        try {
+            System.out.println("downloading mp3 file : " + fileName);
+            FileOutputStream fos = new FileOutputStream(new File(fileName + ".mp3"));
+            BufferedInputStream bis = new BufferedInputStream(new URL(fileUrl).openStream());
+            byte[] buffer = new byte[8192];
+            while (true) {
+                int res = bis.read(buffer, 0, buffer.length);
+                if (res == -1)
+                    break;
+                fos.write(buffer, 0, res);
+            }
+
+            fos.flush();
+            fos.close();
+            System.out.println("***** download success : " + fileName + " *****");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
