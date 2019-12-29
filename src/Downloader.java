@@ -164,7 +164,11 @@ public class Downloader {
     private static void downloadMp3ViaFileUrl(String fileUrl, String fileName) {
         try {
             System.out.println("downloading mp3 file : " + fileName);
-            FileOutputStream fos = new FileOutputStream(new File(fileName + ".mp3"));
+            if (!new File("mp3").exists() && !new File("mp3").isDirectory()) {
+                new File("mp3").mkdir();
+            }
+
+            FileOutputStream fos = new FileOutputStream(new File("mp3\\" + fileName + ".mp3"));
             BufferedInputStream bis = new BufferedInputStream(new URL(fileUrl).openStream());
             byte[] buffer = new byte[8192];
             while (true) {
