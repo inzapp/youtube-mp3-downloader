@@ -26,7 +26,7 @@ public class Downloader {
         }
     }
 
-    public static int youtubeToMp3Download(String youtubeVideoUrl) {
+    private static int youtubeToMp3Download(String youtubeVideoUrl) {
         System.out.println("Start api requesting : " + youtubeVideoUrl);
         String uuid = getUuid(youtubeVideoUrl);
         if (uuid == null) {
@@ -114,8 +114,9 @@ public class Downloader {
             BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
             while (true) {
                 String line = br.readLine();
-                if (line == null)
+                if (line == null) {
                     break;
+                }
                 sb.append(line).append('\n');
             }
             br.close();
@@ -138,12 +139,12 @@ public class Downloader {
             BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
             while (true) {
                 String line = br.readLine();
-                if (line == null)
+                if (line == null) {
                     break;
+                }
                 sb.append(line).append('\n');
             }
             br.close();
-
             return new JSONObject(sb.toString());
         } catch (Exception e) {
             return null;
@@ -152,10 +153,11 @@ public class Downloader {
 
     private static String getJsonValue(JSONObject json, String key) {
         try {
-            if (key.equals("percent"))
+            if (key.equals("percent")) {
                 return String.valueOf(json.getJSONObject("data").getInt(key));
-            else
+            } else {
                 return json.getJSONObject("data").getString(key);
+            }
         } catch (Exception e) {
             return null;
         }
@@ -173,8 +175,9 @@ public class Downloader {
             byte[] buffer = new byte[8192];
             while (true) {
                 int res = bis.read(buffer, 0, buffer.length);
-                if (res == -1)
+                if (res == -1) {
                     break;
+                }
                 fos.write(buffer, 0, res);
             }
 
