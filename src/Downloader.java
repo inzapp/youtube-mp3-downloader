@@ -21,6 +21,7 @@ public class Downloader {
                     res = youtubeToMp3Download(youtubeVideoUrl);
                 } while (res == 1);
             }
+            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

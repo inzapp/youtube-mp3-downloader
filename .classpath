@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="lib/TreemapJson.jar"/>
+	<classpathentry kind="lib" path="out/artifacts/youtube_mp3_downloader_jar/youtube-mp3-downloader.jar"/>
+	<classpathentry kind="output" path="out/production/youtube-mp3-downloader"/>
+</classpath>
