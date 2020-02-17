@@ -19,7 +19,7 @@ public class Mp3YoutubeDownloadApi implements Api {
 
 	private void test() {
 		try {
-			String url = "https://mp3-youtube.download/download/access/20200217063755_9aa30420-0e5c-48e8-9cab-01ea23562df4?expires=1581921787&signature=20ec98ed4380eab975492f30e4ff3bbc52da694744a32f575057905af376ac62";
+			String url = "http://mp3-youtube.download/download/access/20200217071937_331e9262-d7b4-45ff-9a01-2bf621ce169e?expires=1581924289&signature=066f07a17ee4c1735ce25aa377d6bc4866caf5ba1cc33f0117f5102a49363e51";
 			HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
 			conn.setDoInput(true);
 			conn.setRequestMethod("GET");
@@ -36,16 +36,7 @@ public class Mp3YoutubeDownloadApi implements Api {
 			String redirectHtml = sb.toString();
 			System.out.println(redirectHtml);
 
-			String redirectUrlStartStr = "<a href=\"";
-			int redirectUrlStartIdx = redirectHtml.indexOf(redirectUrlStartStr) + redirectUrlStartStr.length();
-			redirectHtml = redirectHtml.substring(redirectUrlStartIdx, redirectHtml.length() - 1);
-
-			String redirectUrlEndStr = "\">";
-			int redirectUrlEndIdx = redirectHtml.indexOf(redirectUrlEndStr);
-			redirectHtml = redirectHtml.substring(0, redirectUrlEndIdx);
-
-			String redirectUrl = redirectHtml;
-			redirectUrl = redirectUrl.replaceAll("https://", "http://");
+			String redirectUrl = getRedirectUrlFromHtml(redirectHtml);
 			System.out.println(redirectUrl);
 
 			conn = (HttpURLConnection) new URL(redirectUrl).openConnection();
@@ -62,22 +53,38 @@ public class Mp3YoutubeDownloadApi implements Api {
 				sb.append(line).append('\n');
 			}
 			System.out.println(sb.toString());
+		
 
-//			byte[] buffer = new byte[8192];
-//			BufferedInputStream bis = new BufferedInputStream(new URL(redirectUrl).openStream());
-//			
-//			while (true) {
-//				int res = bis.read(buffer, 0, buffer.length);
-//				if (res == -1) {
-//					break;
-//				}
-//				System.out.println(res);
-//			}
+
+			byte[] buffer = new byte[8192];
+			BufferedInputStream bis = new BufferedInputStream(new URL(redirectUrl).openStream());
+			
+			while (true) {
+				int res = bis.read(buffer, 0, buffer.length);
+				if (res == -1) {
+					break;
+				}
+				System.out.println(res);
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.exit(0);
+	} 
+	
+	private String getRedirectUrlFromHtml(String redirectHtml) {
+		String redirectUrlStartStr = "url='";
+		int redirectUrlStartIdx = redirectHtml.indexOf(redirectUrlStartStr) + redirectUrlStartStr.length();
+		redirectHtml = redirectHtml.substring(redirectUrlStartIdx, redirectHtml.length() - 1);
+
+		String redirectUrlEndStr = "'\"";
+		int redirectUrlEndIdx = redirectHtml.indexOf(redirectUrlEndStr);
+		redirectHtml = redirectHtml.substring(0, redirectUrlEndIdx);
+
+		String redirectUrl = redirectHtml;
+		redirectUrl = redirectUrl.replaceAll("https://", "http://");
+		return redirectUrl;
 	}
 
 	@Override
