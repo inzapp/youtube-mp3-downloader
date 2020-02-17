@@ -4,13 +4,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import com.inzapp.youtubemp3downlaoder.api.Api;
-import com.inzapp.youtubemp3downlaoder.api.Mp3YoutubeDownload;
+import com.inzapp.youtubemp3downlaoder.api.Mp3YoutubeDownloadApi;
 
 public class Downloader {
 
 	public static void main(String[] args) {
 		try {
-			Api api = new Mp3YoutubeDownload();
+			Api api = new Mp3YoutubeDownloadApi();
 			BufferedReader br = new BufferedReader(new FileReader("youtube-urls.txt"));
 			while (true) {
 				String youtubeVideoUrl = br.readLine();
@@ -18,10 +18,11 @@ public class Downloader {
 					break;
 				}
 
-				int res;
-				do {
-					res = api.download(youtubeVideoUrl);
-				} while (res == Api.SUCCESS);
+				while (true) {
+					if (api.download(youtubeVideoUrl) == Api.SUCCESS) {
+						break;
+					}
+				}
 			}
 			br.close();
 		} catch (Exception e) {

@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.json.JSONObject;
 
-public class Mp3YoutubeDownload implements Api {
+public class Mp3YoutubeDownloadApi implements Api {
 
 	@Override
 	public int download(String youtubeVideoUrl) {
