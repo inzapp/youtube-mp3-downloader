@@ -15,12 +15,12 @@ import org.json.JSONObject;
 public class Mp3YoutubeDownloadApi implements Api {
 
 	@Override
-	public int download(String youtubeVideoUrl) {
+	public ApiResult download(String youtubeVideoUrl) {
 		System.out.println("Start api requesting : " + youtubeVideoUrl);
 		String uuid = getUuid(youtubeVideoUrl);
 		if (uuid == null) {
 			System.out.println("ERROR while converting youtube video : invalid youtube video url");
-			return Api.FAILURE;
+			return ApiResult.SUCCESS;
 		}
 
 		boolean bGetTitle = false;
@@ -67,7 +67,7 @@ public class Mp3YoutubeDownloadApi implements Api {
 					uuid = newUuid;
 				}
 			} catch (Exception e) {
-				return Api.FAILURE;
+				return ApiResult.FAILURE;
 			}
 
 			try {
@@ -151,7 +151,7 @@ public class Mp3YoutubeDownloadApi implements Api {
 		}
 	}
 
-	private int downloadMp3ViaFileUrl(String fileUrl, String fileName) {
+	private ApiResult downloadMp3ViaFileUrl(String fileUrl, String fileName) {
 		try {
 			System.out.println("downloading mp3 file : " + fileName);
 			if (!new File("mp3").exists() && !new File("mp3").isDirectory()) {
@@ -172,10 +172,10 @@ public class Mp3YoutubeDownloadApi implements Api {
 			fos.flush();
 			fos.close();
 			System.out.println("***** download success : " + fileName + " *****");
-			return Api.SUCCESS;
+			return ApiResult.SUCCESS;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Api.FAILURE;
+			return ApiResult.FAILURE;
 		}
 	}
 }

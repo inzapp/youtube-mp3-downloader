@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 import com.inzapp.youtubemp3downlaoder.api.Api;
+import com.inzapp.youtubemp3downlaoder.api.ApiResult;
 import com.inzapp.youtubemp3downlaoder.api.Mp3YoutubeDownloadApi;
 
 public class Downloader {
@@ -19,7 +20,7 @@ public class Downloader {
 				}
 
 				while (true) {
-					if (api.download(youtubeVideoUrl) == Api.SUCCESS) {
+					if (api.download(youtubeVideoUrl) == ApiResult.FAILURE) {
 						break;
 					}
 				}
