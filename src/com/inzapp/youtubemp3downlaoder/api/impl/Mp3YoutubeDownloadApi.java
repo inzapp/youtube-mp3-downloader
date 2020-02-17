@@ -17,8 +17,72 @@ import com.inzapp.youtubemp3downlaoder.api.ApiResult;
 
 public class Mp3YoutubeDownloadApi implements Api {
 
+	private void test() {
+		try {
+			String url = "https://mp3-youtube.download/download/access/20200217063755_9aa30420-0e5c-48e8-9cab-01ea23562df4?expires=1581921787&signature=20ec98ed4380eab975492f30e4ff3bbc52da694744a32f575057905af376ac62";
+			HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+			conn.setDoInput(true);
+			conn.setRequestMethod("GET");
+
+			StringBuilder sb = new StringBuilder();
+			BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			while (true) {
+				String line = br.readLine();
+				if (line == null) {
+					break;
+				}
+				sb.append(line).append('\n');
+			}
+			String redirectHtml = sb.toString();
+			System.out.println(redirectHtml);
+
+			String redirectUrlStartStr = "<a href=\"";
+			int redirectUrlStartIdx = redirectHtml.indexOf(redirectUrlStartStr) + redirectUrlStartStr.length();
+			redirectHtml = redirectHtml.substring(redirectUrlStartIdx, redirectHtml.length() - 1);
+
+			String redirectUrlEndStr = "\">";
+			int redirectUrlEndIdx = redirectHtml.indexOf(redirectUrlEndStr);
+			redirectHtml = redirectHtml.substring(0, redirectUrlEndIdx);
+
+			String redirectUrl = redirectHtml;
+			redirectUrl = redirectUrl.replaceAll("https://", "http://");
+			System.out.println(redirectUrl);
+
+			conn = (HttpURLConnection) new URL(redirectUrl).openConnection();
+			conn.setDoInput(true);
+			conn.setRequestMethod("GET");
+
+			sb = new StringBuilder();
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			while (true) {
+				String line = br.readLine();
+				if (line == null) {
+					break;
+				}
+				sb.append(line).append('\n');
+			}
+			System.out.println(sb.toString());
+
+//			byte[] buffer = new byte[8192];
+//			BufferedInputStream bis = new BufferedInputStream(new URL(redirectUrl).openStream());
+//			
+//			while (true) {
+//				int res = bis.read(buffer, 0, buffer.length);
+//				if (res == -1) {
+//					break;
+//				}
+//				System.out.println(res);
+//			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+	}
+
 	@Override
 	public ApiResult download(String youtubeVideoUrl) {
+		test();
 		System.out.println("Start api requesting : " + youtubeVideoUrl);
 		String uuid = getUuid(youtubeVideoUrl);
 		if (uuid == null) {
