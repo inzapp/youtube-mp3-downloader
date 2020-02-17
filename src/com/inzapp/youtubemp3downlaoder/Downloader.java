@@ -5,7 +5,7 @@ import java.io.FileReader;
 
 import com.inzapp.youtubemp3downlaoder.api.Api;
 import com.inzapp.youtubemp3downlaoder.api.ApiResult;
-import com.inzapp.youtubemp3downlaoder.api.Mp3YoutubeDownloadApi;
+import com.inzapp.youtubemp3downlaoder.api.impl.Mp3YoutubeDownloadApi;
 
 public class Downloader {
 

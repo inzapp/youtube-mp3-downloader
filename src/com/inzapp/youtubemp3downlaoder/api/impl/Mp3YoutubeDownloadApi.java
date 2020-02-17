@@ -1,4 +1,4 @@
-package com.inzapp.youtubemp3downlaoder.api;
+package com.inzapp.youtubemp3downlaoder.api.impl;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -11,6 +11,9 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 import org.json.JSONObject;
+
+import com.inzapp.youtubemp3downlaoder.api.Api;
+import com.inzapp.youtubemp3downlaoder.api.ApiResult;
 
 public class Mp3YoutubeDownloadApi implements Api {
 
